@@ -5,7 +5,8 @@ const app = new Hono().basePath('/slide')
 
 app.get('/', (c) => {
   const page = c.req.query('page')
-  return c.render(<SlidePage searchParams={{ page }} />, { title: 'Slide Presentation' })
+  const searchParams = page ? { page } : {}
+  return c.render(<SlidePage searchParams={searchParams} />, { title: 'Slide Presentation' })
 })
 
 export default app

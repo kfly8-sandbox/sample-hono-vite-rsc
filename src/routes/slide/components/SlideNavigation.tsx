@@ -1,6 +1,7 @@
 "use client"
 
-import { useEffect, useCallback } from 'react'
+import { useCallback } from 'react'
+import { Link } from '../../../rsc/Link'
 
 type Props = {
   initialPage: number
@@ -22,66 +23,35 @@ export function SlideNavigation({ initialPage, totalPages }: Props) {
 
   const currentPage = getCurrentPageFromUrl()
 
-  // Navigate to a specific page using browser navigation
-  const navigateToPage = useCallback((page: number) => {
-    if (page < 1 || page > totalPages || page === currentPage) return
-
-    // Use pushState to trigger listenNavigation in entry.browser.tsx
-    window.history.pushState({}, '', `/slide?page=${page}`)
-
-    console.log(`Navigating to page ${page} using listenNavigation`)
-  }, [currentPage, totalPages])
-
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft' && currentPage > 1) {
-        navigateToPage(currentPage - 1)
-      } else if (e.key === 'ArrowRight' && currentPage < totalPages) {
-        navigateToPage(currentPage + 1)
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [currentPage, navigateToPage, totalPages])
-
   const isFirstPage = currentPage <= 1
   const isLastPage = currentPage >= totalPages
 
   return (
-    <div className="flex justify-between items-center">
-      <button
-        onClick={() => navigateToPage(currentPage - 1)}
-        disabled={isFirstPage}
-        className="px-6 py-3 bg-blue-500 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600 transition-all transform hover:scale-105 disabled:transform-none"
-      >
-        ← Previous
-      </button>
+    <div className="space-y-6">
+      {/* Navigation Links */}
+      <div className="flex justify-between items-center">
+        <Link
+          href={isFirstPage ? '#' : `/slide?page=${currentPage - 1}`}
+          className={`px-6 py-3 rounded-lg transition-all ${
+            isFirstPage
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-blue-500 text-white hover:bg-blue-600 transform hover:scale-105'
+          }`}
+        >
+          ← Previous
+        </Link>
 
-      <div className="flex items-center space-x-2">
-        {[...Array(totalPages)].map((_, i) => (
-          <button
-            key={i + 1}
-            onClick={() => navigateToPage(i + 1)}
-            className={`w-12 h-12 rounded-lg transition-all transform hover:scale-110 ${
-              currentPage === i + 1
-                ? 'bg-blue-500 text-white shadow-lg scale-110'
-                : 'bg-gray-200 hover:bg-gray-300'
-            }`}
-          >
-            {i + 1}
-          </button>
-        ))}
+        <Link
+          href={isLastPage ? '#' : `/slide?page=${currentPage + 1}`}
+          className={`px-6 py-3 rounded-lg transition-all ${
+            isLastPage
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-blue-500 text-white hover:bg-blue-600 transform hover:scale-105'
+          }`}
+        >
+          Next →
+        </Link>
       </div>
-
-      <button
-        onClick={() => navigateToPage(currentPage + 1)}
-        disabled={isLastPage}
-        className="px-6 py-3 bg-blue-500 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600 transition-all transform hover:scale-105 disabled:transform-none"
-      >
-        Next →
-      </button>
     </div>
   )
 }

@@ -3,6 +3,7 @@ import React from 'react'
 import * as ReactDOMClient from 'react-dom/client'
 import { rscStream } from 'rsc-html-stream/client'
 import type { RscPayload } from './types'
+import { setGlobalPayloadSetter } from './Link'
 
 async function main() {
   let setPayload: (v: RscPayload) => void
@@ -16,11 +17,10 @@ async function main() {
 
     React.useEffect(() => {
       setPayload = (v) => React.startTransition(() => setPayload_(v))
+      
+      // Register the payload setter globally for Link component
+      setGlobalPayloadSetter(setPayload)
     }, [setPayload_])
-
-    React.useEffect(() => {
-      return listenNavigation(() => fetchRscPayload())
-    }, [])
 
     return payload.root
   }
@@ -46,51 +46,5 @@ async function main() {
   }
 }
 
-function listenNavigation(onNavigation: () => void) {
-  window.addEventListener('popstate', onNavigation)
-
-  const oldPushState = window.history.pushState
-  window.history.pushState = function (...args) {
-    const res = oldPushState.apply(this, args)
-    onNavigation()
-    return res
-  }
-
-  const oldReplaceState = window.history.replaceState
-  window.history.replaceState = function (...args) {
-    const res = oldReplaceState.apply(this, args)
-    onNavigation()
-    return res
-  }
-
-  function onClick(e: MouseEvent) {
-    let link = (e.target as Element).closest('a')
-    if (
-      link &&
-      link instanceof HTMLAnchorElement &&
-      link.href &&
-      (!link.target || link.target === '_self') &&
-      link.origin === location.origin &&
-      !link.hasAttribute('download') &&
-      e.button === 0 &&
-      !e.metaKey &&
-      !e.ctrlKey &&
-      !e.altKey &&
-      !e.shiftKey &&
-      !e.defaultPrevented
-    ) {
-      e.preventDefault()
-      history.pushState(null, '', link.href)
-    }
-  }
-  document.addEventListener('click', onClick)
-
-  return () => {
-    document.removeEventListener('click', onClick)
-    window.removeEventListener('popstate', onNavigation)
-    window.history.pushState = oldPushState
-    window.history.replaceState = oldReplaceState
-  }
-}
 
 main()

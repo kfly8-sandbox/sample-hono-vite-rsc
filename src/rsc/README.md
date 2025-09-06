@@ -1,16 +1,68 @@
-# React Server Components Setup
+# Link Component
 
-This directory contains the React Server Components (RSC) implementation for the application.
+Custom Link component that provides automatic RSC navigation, similar to Next.js Link.
 
-## Files
+## Usage
 
-- `entry.browser.tsx` - Client-side entry point for browser rendering
-- `entry.rsc.tsx` - React Server Components entry point
-- `entry.ssr.tsx` - Server-side rendering entry point
-- `rsc-renderer.tsx` - Hono middleware for RSC rendering
+```jsx
+import { Link } from '../rsc/Link'
 
-## License
+// Basic usage
+<Link href="/slide?page=2">Next Slide</Link>
 
-The code in this directory is adapted from [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react) and is licensed under the MIT License.
+// With custom styling
+<Link 
+  href="/slide?page=3" 
+  className="button-primary"
+>
+  Go to Page 3
+</Link>
 
-Copyright (c) 2019-present, Yuxi (Evan) You and Vite contributors
+// With custom onClick handler
+<Link 
+  href="/slide?page=4"
+  onClick={(e) => {
+    if (someCondition) {
+      e.preventDefault() // Prevent navigation
+    }
+  }}
+>
+  Conditional Navigation
+</Link>
+```
+
+## Features
+
+- ✅ **Automatic RSC Navigation**: Intercepts clicks and uses `history.pushState()`
+- ✅ **External Link Support**: Handles external links normally (no interception)
+- ✅ **Custom onClick**: Supports custom click handlers with preventDefault support
+- ✅ **Accessibility**: Maintains proper `<a>` semantics and href attributes
+- ✅ **SEO Friendly**: Real URLs that work with search engines and screen readers
+
+## How it Works
+
+1. **Click Interception**: Prevents default browser navigation for internal links
+2. **History API**: Uses `window.history.pushState()` to update the URL
+3. **RSC Trigger**: The URL change triggers `listenNavigation` in `entry.browser.tsx`
+4. **Automatic Fetch**: `listenNavigation` automatically fetches the RSC payload
+5. **Page Update**: React re-renders with the new server components
+
+## Comparison with Next.js Link
+
+| Feature | Next.js Link | Custom Link |
+|---------|-------------|-------------|
+| RSC Navigation | ✅ Built-in | ✅ Via listenNavigation |
+| Prefetching | ✅ Automatic | ❌ Not implemented |
+| Client-side routing | ✅ Router | ✅ History API |
+| External links | ✅ Auto-detect | ✅ Auto-detect |
+| TypeScript | ✅ Full support | ✅ Full support |
+
+## Integration with listenNavigation
+
+This Link component is designed to work seamlessly with the `listenNavigation` system in `entry.browser.tsx`:
+
+1. Link component calls `history.pushState(href)`
+2. `listenNavigation` detects the URL change via its pushState hook
+3. `fetchRscPayload()` is automatically called
+4. New RSC payload is fetched and applied
+5. Page content updates without full page reload
