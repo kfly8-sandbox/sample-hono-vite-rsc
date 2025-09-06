@@ -17,7 +17,7 @@ async function main() {
 
     React.useEffect(() => {
       setPayload = (v) => React.startTransition(() => setPayload_(v))
-      
+
       // Register the payload setter globally for Link component
       setGlobalPayloadSetter(setPayload)
     }, [setPayload_])
@@ -38,6 +38,11 @@ async function main() {
     </React.StrictMode>
   )
   ReactDOMClient.hydrateRoot(document, browserRoot)
+
+  // Handle browser back/forward navigation
+  window.addEventListener('popstate', () => {
+    fetchRscPayload()
+  })
 
   if (import.meta.hot) {
     import.meta.hot.on('rsc:update', () => {
