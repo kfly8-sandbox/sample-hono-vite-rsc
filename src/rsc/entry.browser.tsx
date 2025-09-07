@@ -3,7 +3,6 @@ import React from 'react'
 import * as ReactDOMClient from 'react-dom/client'
 import { rscStream } from 'rsc-html-stream/client'
 import type { RscPayload } from './types'
-import { setGlobalPayloadSetter } from '../components/Link'
 
 async function main() {
   let setPayload: (v: RscPayload) => void
@@ -17,9 +16,6 @@ async function main() {
 
     React.useEffect(() => {
       setPayload = (v) => React.startTransition(() => setPayload_(v))
-
-      // Register the payload setter globally for Link component
-      setGlobalPayloadSetter(setPayload)
     }, [setPayload_])
 
     return payload.root
