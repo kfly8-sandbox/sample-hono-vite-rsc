@@ -1,17 +1,20 @@
 "use client"
 
 import { Link } from '../../../components/Link'
-import { useRouter } from '../../../hooks/useRouter'
+import { useSearchParams } from '../../../hooks/useSearchParams'
 
 type Props = {
   initialPage: number
   totalPages: number
 }
 
+type SearchParams = {
+  page: number
+}
+
 export function SlideNavigation({ initialPage, totalPages }: Props) {
-  const router = useRouter()
-  const pageParam = router.getParam('page')
-  const currentPage = pageParam ? Number(pageParam) : initialPage
+  const searchParams = useSearchParams<SearchParams>()
+  const currentPage = searchParams.getNumber('page') ?? initialPage
 
   const isFirstPage = currentPage <= 1
   const isLastPage = currentPage >= totalPages
