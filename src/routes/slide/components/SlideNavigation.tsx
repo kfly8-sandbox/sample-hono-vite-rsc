@@ -1,7 +1,7 @@
 "use client"
 
-import { useCallback } from 'react'
 import { Link } from '../../../components/Link'
+import { useRouter } from '../../../hooks/useRouter'
 
 type Props = {
   initialPage: number
@@ -9,19 +9,9 @@ type Props = {
 }
 
 export function SlideNavigation({ initialPage, totalPages }: Props) {
-  // Get current page from URL
-  const getCurrentPageFromUrl = useCallback(() => {
-    if (typeof window === 'undefined') {
-      return initialPage
-    }
-
-    const url = new URL(window.location.href)
-    const pageParam = url.searchParams.get('page')
-    const pageNumber = pageParam ? Number(pageParam) : 1
-    return pageNumber
-  }, [initialPage])
-
-  const currentPage = getCurrentPageFromUrl()
+  const router = useRouter()
+  const pageParam = router.getParam('page')
+  const currentPage = pageParam ? Number(pageParam) : initialPage
 
   const isFirstPage = currentPage <= 1
   const isLastPage = currentPage >= totalPages
