@@ -2,7 +2,7 @@
 
 import React from 'react'
 import * as ReactClient from '@vitejs/plugin-rsc/browser'
-import type { RscPayload } from './types'
+import type { RscPayload } from '../rsc/types'
 
 type LinkProps = {
   href: string

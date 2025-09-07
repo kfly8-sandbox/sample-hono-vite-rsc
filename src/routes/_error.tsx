@@ -1,7 +1,10 @@
 import type { ErrorHandler } from 'hono'
 
 const onError: ErrorHandler = (err, c) => {
-  console.error(err)
+  // Only log if there's an actual error
+  if (err) {
+    console.error(err)
+  }
 
   c.status(500)
   return c.render(

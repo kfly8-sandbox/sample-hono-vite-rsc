@@ -3,7 +3,7 @@ import React from 'react'
 import * as ReactDOMClient from 'react-dom/client'
 import { rscStream } from 'rsc-html-stream/client'
 import type { RscPayload } from './types'
-import { setGlobalPayloadSetter } from './Link'
+import { setGlobalPayloadSetter } from '../components/Link'
 
 async function main() {
   let setPayload: (v: RscPayload) => void

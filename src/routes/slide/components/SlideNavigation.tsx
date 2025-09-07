@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback } from 'react'
-import { Link } from '../../../rsc/Link'
+import { Link } from '../../../components/Link'
 
 type Props = {
   initialPage: number
