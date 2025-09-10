@@ -20,10 +20,8 @@ const modules = import.meta.glob([
 
 for (const path in modules) {
   const module = modules[path] as any
-  console.log('Loading module:', path, 'default:', !!module.default)
   if (module.default) {
     app.route('/', module.default)
-    console.log('Registered route for module:', path)
   }
 }
 

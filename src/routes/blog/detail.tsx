@@ -1,4 +1,5 @@
 import type { BlogPostDetail, BlogNavigation } from './data'
+import { Link } from '../../components/Link'
 
 type Props = {
   post: BlogPostDetail
@@ -12,9 +13,9 @@ export function BlogDetailPage({ post, navigation }: Props) {
       <div className="container mx-auto px-4 py-8 max-w-3xl">
         {/* Breadcrumb */}
         <nav className="mb-8">
-          <a href="/blog" className="text-blue-600 hover:text-blue-800">
+          <Link href="/blog" className="text-blue-600 hover:text-blue-800">
             ← Back to Blog
-          </a>
+          </Link>
         </nav>
 
         {/* Article header */}
@@ -58,23 +59,23 @@ export function BlogDetailPage({ post, navigation }: Props) {
         {/* Navigation to other posts */}
         <nav className="mt-8 flex justify-between">
           {navigation.previousPost && (
-            <a
+            <Link
               href={`/blog/${navigation.previousPost.id}`}
               className="flex-1 mr-4 p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
             >
               <div className="text-sm text-gray-500 mb-1">Previous post</div>
               <div className="font-semibold text-gray-900">{navigation.previousPost.title}</div>
-            </a>
+            </Link>
           )}
 
           {navigation.nextPost && (
-            <a
+            <Link
               href={`/blog/${navigation.nextPost.id}`}
               className="flex-1 ml-4 p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow text-right"
             >
               <div className="text-sm text-gray-500 mb-1">Next post</div>
               <div className="font-semibold text-gray-900">{navigation.nextPost.title}</div>
-            </a>
+            </Link>
           )}
         </nav>
       </div>

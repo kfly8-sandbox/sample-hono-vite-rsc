@@ -18,12 +18,26 @@ async function main() {
       setPayload = (v) => React.startTransition(() => setPayload_(v))
     }, [setPayload_])
 
+    React.useEffect(() => {
+      return listenNavigation(() => fetchRscPayload())
+    }, [])
+
     return payload.root
   }
 
   async function fetchRscPayload() {
+    // TODO: implement better requestId generation
+    const requestId = Date.now().toString()
+
+    const url = new URL(window.location.href, window.location.origin)
+    url.searchParams.set('_rsc', requestId)
+
     const payload = await ReactClient.createFromFetch<RscPayload>(
-      fetch(window.location.href),
+      fetch(url.toString(), {
+        headers: {
+          'RSC': '1',
+        },
+      })
     )
     setPayload(payload)
   }
@@ -47,5 +61,28 @@ async function main() {
   }
 }
 
+function listenNavigation(onNavigation: () => void) {
+  window.addEventListener('popstate', onNavigation)
+
+  const oldPushState = window.history.pushState
+  window.history.pushState = function (...args) {
+    const res = oldPushState.apply(this, args)
+    onNavigation()
+    return res
+  }
+
+  const oldReplaceState = window.history.replaceState
+  window.history.replaceState = function (...args) {
+    const res = oldReplaceState.apply(this, args)
+    onNavigation()
+    return res
+  }
+
+  return () => {
+    window.removeEventListener('popstate', onNavigation)
+    window.history.pushState = oldPushState
+    window.history.replaceState = oldReplaceState
+  }
+}
 
 main()
