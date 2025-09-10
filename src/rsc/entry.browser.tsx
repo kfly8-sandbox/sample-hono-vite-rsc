@@ -3,6 +3,7 @@ import React from 'react'
 import * as ReactDOMClient from 'react-dom/client'
 import { rscStream } from 'rsc-html-stream/client'
 import type { RscPayload } from './types'
+import { generateRequestId } from './utils/request-id'
 
 async function main() {
   let setPayload: (v: RscPayload) => void
@@ -26,8 +27,10 @@ async function main() {
   }
 
   async function fetchRscPayload() {
-    // TODO: implement better requestId generation
-    const requestId = Date.now().toString()
+    console.log('Current URL:', window.location.href)
+
+    const requestId = generateRequestId(window.location.href)
+    console.log('Generated requestId:', requestId)
 
     const url = new URL(window.location.href, window.location.origin)
     url.searchParams.set('_rsc', requestId)
