@@ -27,10 +27,7 @@ async function main() {
   }
 
   async function fetchRscPayload() {
-    console.log('Current URL:', window.location.href)
-
     const requestId = generateRequestId(window.location.href)
-    console.log('Generated requestId:', requestId)
 
     const url = new URL(window.location.href, window.location.origin)
     url.searchParams.set('_rsc', requestId)
@@ -51,11 +48,6 @@ async function main() {
     </React.StrictMode>
   )
   ReactDOMClient.hydrateRoot(document, browserRoot)
-
-  // Handle browser back/forward navigation
-  window.addEventListener('popstate', () => {
-    fetchRscPayload()
-  })
 
   if (import.meta.hot) {
     import.meta.hot.on('rsc:update', () => {

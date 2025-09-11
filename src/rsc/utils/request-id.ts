@@ -7,24 +7,20 @@ export function djb2Hash(str: string) {
     const char = str.charCodeAt(i)
     hash = ((hash << 5) + hash + char) & 0xffffffff
   }
-  console.log(`Hash for "${str}":`, hash)
   return hash >>> 0
 }
 
 export function hexHash(str: string) {
-  const hashValue = djb2Hash(str)
-  const result = hashValue.toString(36).slice(0, 5)
-  console.log(`hexHash for "${str}": ${hashValue} -> ${result}`)
-  return result
+  return djb2Hash(str).toString(36).slice(0, 5)
 }
 
 /**
  * Generate RSC requestId
- * 
+ *
  * Note: This is a simplified implementation compared to Next.js
  * Next.js uses complex router state and headers for cache-busting:
  * - https://github.com/vercel/next.js/blob/canary/packages/next/src/shared/lib/router/utils/cache-busting-search-param.ts
- * 
+ *
  * Our implementation uses simple URL-based hash for consistent caching
  */
 export function generateRequestId(href: string): string {
