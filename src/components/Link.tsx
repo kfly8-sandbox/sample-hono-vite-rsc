@@ -7,7 +7,6 @@ type LinkProps = {
   children: React.ReactNode
   onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void
   onMouseEnter?: (e: React.MouseEvent<HTMLAnchorElement>) => void
-  prefetch?: boolean // TODO: implement prefetching
 } & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'onClick' | 'onMouseEnter'>
 
 export function Link({
@@ -15,7 +14,6 @@ export function Link({
   children,
   onClick,
   onMouseEnter,
-  prefetch = true,
   ...anchorProps
 }: LinkProps) {
 
@@ -44,10 +42,7 @@ export function Link({
   }
 
   const handleMouseEnter = onMouseEnter ? onMouseEnter : (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (prefetch && shouldNavigate(e)) {
-      console.log('prefetching... (not implemented yet)')
-      // TODO: implement prefetching
-    }
+    // do nothing for now, but could be used for prefetching
   }
 
   return (
